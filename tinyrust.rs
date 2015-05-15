@@ -45,11 +45,7 @@ pub fn main() {
     //
     // - exit(0) if we confirm user namespaces work great as non-root.
     //
-    // - exit(1) if we confirm user namespaces do not work for us as
-    //   non-root.
-    //
-    // - exit(2) if we find ourselves in a situation where we have no
-    //   idea what is going on.
+    // - exit non-zero if anything else happens.
 
     // Since I started this codebase by forking Keegan McAllister's
     // tinyrust project, it comes bundled with a string constant
@@ -82,16 +78,11 @@ pub fn main() {
 
     // Now that we're not root, we can try to unshare(CLONE_NEWUSER).
     // CLONE_NEWUSER is 0x10000000.
-
-    let unshare_result = unshare(0x10000000);
-
-    if (unshare_result == 0) {
-        // Hooray! Success.
-        exit(0);
-    } else {
-        // Some kind of sadness resulted. This could be permission
-        // denied, or it could be a deeper failure of the syscall, for
-        // example, if the syscall is unavailable on this kernel.
-        exit(1);
-    }
+    //
+    // We pass unshare()'s return code directly to exit(). It exits 0
+    // in the case of success! And if the kernel gives us a non-zero
+    // exit code, then we exit non-zero.
+    //
+    // Note that if we overflow, we'll be a little sad. Oh, well.
+    exit(unshare(0x10000000));
 }
