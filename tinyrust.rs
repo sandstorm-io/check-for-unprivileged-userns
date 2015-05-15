@@ -65,16 +65,10 @@ pub fn main() {
     // First, check if we are root. If we are, we setuid to 65534
     // (which is just a dummy non-root user ID, which also happens to
     // usually be "nobody"), since we want to find out if
-    // unshare(CLONE_NEWUSER) works when we are not root.
-
-    let current_uid = getuid();
-    if (current_uid == 0) {
-        let setuid_result = setuid(65534);
-        if (setuid_result != 0) {
-            // Hmm, we failed to setuid properly. Abort now.
-            exit(2);
-        }
-    }
+    // unshare(CLONE_NEWUSER) works when we are not root. If we are already
+    // non-root, setuid() will fail, but that's fine because we didn't need it
+    // anyway in that case, so we just ignore it.
+    setuid(65534);
 
     // Now that we're not root, we can try to unshare(CLONE_NEWUSER).
     // CLONE_NEWUSER is 0x10000000.

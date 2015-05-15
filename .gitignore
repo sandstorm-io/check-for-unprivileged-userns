@@ -5,3 +5,5 @@
 /tinyrust.ll
 /tinyrust.o
 /libtinyrust.rlib
+/tinyasm
+/tinyasm.o
