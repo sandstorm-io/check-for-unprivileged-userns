@@ -12,15 +12,11 @@ fn exit(n: usize) -> ! {
     }
 }
 
+// This is here in case you need a way to add debugging prints to this
+// code.
 fn write(fd: usize, buf: &[u8]) -> usize {
     unsafe {
         return syscall!(WRITE, fd, buf.as_ptr(), buf.len())
-    }
-}
-
-fn getuid() -> usize {
-    unsafe {
-        return syscall!(GETUID)
     }
 }
 
